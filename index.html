@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Chat ElevenLabs</title>
+  <style>
+    body{font-family:sans-serif;margin:2rem}
+  </style>
+</head>
+<body>
+
+<h1>Demo ElevenLabs ConvAI</h1>
+
+<!-- Widget vazio: receberá o signed‑url via JS -->
+<elevenlabs-convai id="chat" variant="expanded"></elevenlabs-convai>
+<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+<script>
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('/.netlify/functions/signedUrl');
+    if (!res.ok) throw new Error('signedUrl ' + res.status);
+    const { signedUrl } = await res.json();
+    document.getElementById('chat').setAttribute('signed-url', signedUrl);
+  } catch (e) {
+    console.error('Erro ao gerar signedUrl', e);
+    alert('Falha ao inicializar o chat');
+  }
+});
+</script>
+
+</body>
+</html>
