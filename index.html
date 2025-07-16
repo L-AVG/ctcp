@@ -2,43 +2,55 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <title>Chat ElevenLabs</title>
+  <title>Demo ElevenLabs ConvAI</title>
   <style>
-    body{font-family:sans-serif;margin:2rem}
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+    }
+    elevenlabs-convai {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
 
-<h1>Demo ElevenLabs ConvAI</h1>
+  <h1>Demo ElevenLabs ConvAI</h1>
 
-<!-- Widget vazio: receberá o signed‑url via JS -->
-<elevenlabs-convai id="chat" variant="expanded"></elevenlabs-convai>
+  <!-- elemento que receberá o signed-url -->
+  <elevenlabs-convai id="chat" variant="expanded"></elevenlabs-convai>
 
-<script>
-window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    // 1) busca seu signedUrl
-    const res = await fetch('/.netlify/functions/signedUrl');
-    if (!res.ok) throw new Error('signedUrl ' + res.status);
-    const { signedUrl } = await res.json();
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // 1) busca o signedUrl via Netlify Function
+        const res = await fetch('/.netlify/functions/signedUrl');
+        if (!res.ok) throw new Error('signedUrl ' + res.status);
+        const { signedUrl } = await res.json();
 
-    // 2) seta no elemento
-    const chatEl = document.getElementById('chat');
-    chatEl.setAttribute('signed-url', signedUrl);
+        // 2) seta o atributo no elemento
+        const chatEl = document.getElementById('chat');
+        chatEl.setAttribute('signed-url', signedUrl);
 
-    // 3) injeta o script de embed _depois_ de já ter o signed-url
-    const s = document.createElement('script');
-    s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-    document.body.appendChild(s);
+        // 3) injeta o script de embed e, ao carregar, abre o widget
+        const s = document.createElement('script');
+        s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+        s.onload = () => {
+          console.log('Embed script carregado, abrindo ConvAI…');
+          chatEl.open();
+        };
+        document.body.appendChild(s);
 
-    console.log('ConvAI init OK');
-  } catch (e) {
-    console.error('Erro ao inicializar ConvAI:', e);
-    alert('Falha ao inicializar o chat ElevenLabs');
-  }
-});
-</script>
-</script>
+        console.log('ConvAI init OK');
+      } catch (e) {
+        console.error('Erro ao inicializar ConvAI:', e);
+        alert('Falha ao inicializar o chat ElevenLabs');
+      }
+    });
+  </script>
 
 </body>
 </html>
