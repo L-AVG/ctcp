@@ -4,50 +4,43 @@
   <meta charset="utf-8" />
   <title>Demo ElevenLabs ConvAI</title>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 2rem;
-    }
+    /* Variante “floating” já se posiciona sozinha, mas você pode ajustar: */
     elevenlabs-convai {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
       z-index: 9999;
     }
   </style>
 </head>
 <body>
 
-  <h1>Demo ElevenLabs ConvAI</h1>
-
-  <!-- elemento que receberá o signed-url -->
-  <elevenlabs-convai id="chat" variant="expanded"></elevenlabs-convai>
+  <!-- 1) Inclua o agent-id para o widget saber qual agente carregar -->
+  <elevenlabs-convai
+    id="chat"
+    agent-id="agent_01k033mq6bft48x7vwjv91ada"
+    server-location="us"
+    variant="floating"
+  ></elevenlabs-convai>
 
   <script>
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        // 1) busca o signedUrl via Netlify Function
+        // 2) Busca o signedUrl na sua function Netlify
         const res = await fetch('/.netlify/functions/signedUrl');
         if (!res.ok) throw new Error('signedUrl ' + res.status);
         const { signedUrl } = await res.json();
 
-        // 2) seta o atributo no elemento
+        // 3) Seta o atributo no elemento
         const chatEl = document.getElementById('chat');
         chatEl.setAttribute('signed-url', signedUrl);
+        console.log('signed-url definido:', signedUrl);
 
-        // 3) injeta o script de embed e, ao carregar, abre o widget
+        // 4) Injeta o script de embed _depois_ de ter agent-id + signed-url
         const s = document.createElement('script');
         s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-        s.onload = () => {
-          console.log('Embed script carregado, abrindo ConvAI…');
-          chatEl.open();
-        };
+        s.async = true;
         document.body.appendChild(s);
 
-        console.log('ConvAI init OK');
       } catch (e) {
         console.error('Erro ao inicializar ConvAI:', e);
-        alert('Falha ao inicializar o chat ElevenLabs');
       }
     });
   </script>
