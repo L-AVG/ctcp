@@ -2,48 +2,32 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <title>Demo ElevenLabs ConvAI</title>
+  <title>Chat ElevenLabs ConvAI</title>
   <style>
-    /* Variante “floating” já se posiciona sozinha, mas você pode ajustar: */
+    /* Posiciona o widget no canto inferior direito */
     elevenlabs-convai {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
       z-index: 9999;
     }
   </style>
 </head>
 <body>
 
-  <!-- 1) Inclua o agent-id para o widget saber qual agente carregar -->
+  <h1>Demo Chatbot ElevenLabs</h1>
+  <p>Como seu agente agora não exige autenticação, basta incluir o snippet abaixo:</p>
+
+  <!-- Snippet oficial: widget público, auth desligada no dashboard -->
   <elevenlabs-convai
-    id="chat"
-    agent-id="agent_01k033mq6bft48x7vwjv91ada"
-    server-location="us"
+    agent-id="agent_01k033mq6bft48x7jvwjv91ada"
     variant="floating"
   ></elevenlabs-convai>
-
-  <script>
-    window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        // 2) Busca o signedUrl na sua function Netlify
-        const res = await fetch('/.netlify/functions/signedUrl');
-        if (!res.ok) throw new Error('signedUrl ' + res.status);
-        const { signedUrl } = await res.json();
-
-        // 3) Seta o atributo no elemento
-        const chatEl = document.getElementById('chat');
-        chatEl.setAttribute('signed-url', signedUrl);
-        console.log('signed-url definido:', signedUrl);
-
-        // 4) Injeta o script de embed _depois_ de ter agent-id + signed-url
-        const s = document.createElement('script');
-        s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-        s.async = true;
-        document.body.appendChild(s);
-
-      } catch (e) {
-        console.error('Erro ao inicializar ConvAI:', e);
-      }
-    });
-  </script>
+  <script
+    src="https://unpkg.com/@elevenlabs/convai-widget-embed"
+    async
+    type="text/javascript"
+  ></script>
 
 </body>
 </html>
