@@ -13,20 +13,31 @@
 
 <!-- Widget vazio: receberá o signed‑url via JS -->
 <elevenlabs-convai id="chat" variant="expanded"></elevenlabs-convai>
-<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 
 <script>
 window.addEventListener('DOMContentLoaded', async () => {
   try {
+    // 1) busca seu signedUrl
     const res = await fetch('/.netlify/functions/signedUrl');
     if (!res.ok) throw new Error('signedUrl ' + res.status);
     const { signedUrl } = await res.json();
-    document.getElementById('chat').setAttribute('signed-url', signedUrl);
+
+    // 2) seta no elemento
+    const chatEl = document.getElementById('chat');
+    chatEl.setAttribute('signed-url', signedUrl);
+
+    // 3) injeta o script de embed _depois_ de já ter o signed-url
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+    document.body.appendChild(s);
+
+    console.log('ConvAI init OK');
   } catch (e) {
-    console.error('Erro ao gerar signedUrl', e);
-    alert('Falha ao inicializar o chat');
+    console.error('Erro ao inicializar ConvAI:', e);
+    alert('Falha ao inicializar o chat ElevenLabs');
   }
 });
+</script>
 </script>
 
 </body>
